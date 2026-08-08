@@ -1,9 +1,6 @@
 package disk
 
 import (
-	"os"
-	"strings"
-
 	"github.com/Shihab369/devops-thinking-lab/internal/core"
 	"github.com/Shihab369/devops-thinking-lab/internal/models"
 	"golang.org/x/sys/unix"
@@ -44,27 +41,4 @@ func readDiskStats(path string) map[string]uint64 {
 		"used_bytes":  used,
 		"free_bytes":  free,
 	}
-}
-
-func readMountPoints() []string {
-	data, err := os.ReadFile("/proc/mounts")
-	if err != nil {
-		return []string{}
-	}
-
-	var mounts []string
-
-	lines := strings.Split(string(data), "\n")
-
-	for _, line := range lines {
-		fields := strings.Fields(line)
-
-		if len(fields) < 2 {
-			continue
-		}
-
-		mounts = append(mounts, fields[1])
-	}
-
-	return mounts
 }

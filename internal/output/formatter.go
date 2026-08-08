@@ -1,0 +1,50 @@
+package output
+
+import (
+	"fmt"
+
+	"github.com/Shihab369/devops-thinking-lab/internal/models"
+)
+
+func PrintResults(results []models.Result) {
+	for _, result := range results {
+		fmt.Printf("[%s]\n", result.Name)
+		printData(result.Data, 1)
+	}
+}
+
+func printData(data map[string]interface{}, level int) {
+	for key, value := range data {
+		printIndent(level)
+		fmt.Printf("%s: ", key)
+
+		switch nested := value.(type) {
+		case map[string]interface{}:
+			fmt.Println()
+			printData(nested, level+1)
+
+		case map[string]string:
+			fmt.Println()
+			for key, value := range nested {
+				printIndent(level + 1)
+				fmt.Printf("%s: %s\n", key, value)
+			}
+
+		case map[string]uint64:
+			fmt.Println()
+			for key, value := range nested {
+				printIndent(level + 1)
+				fmt.Printf("%s: %d\n", key, value)
+			}
+
+		default:
+			fmt.Printf("%v\n", value)
+		}
+	}
+}
+
+func printIndent(level int) {
+	for i := 0; i < level; i++ {
+		fmt.Print("  ")
+	}
+}

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
+	"fmt"
 	"os"
 
 	"github.com/Shihab369/devops-thinking-lab/collectors/cpu"
@@ -11,10 +14,14 @@ import (
 	"github.com/Shihab369/devops-thinking-lab/collectors/system"
 	"github.com/Shihab369/devops-thinking-lab/collectors/uptime"
 	"github.com/Shihab369/devops-thinking-lab/internal/core"
+	"github.com/Shihab369/devops-thinking-lab/internal/models"
 	"github.com/Shihab369/devops-thinking-lab/internal/output"
 )
 
 func main() {
+	jsonOutput := flag.Bool("json", false, "output results as JSON")
+	flag.Parse()
+
 	runner := core.NewRunner(
 		cpu.CPUCollector{},
 		disk.DiskCollector{},
@@ -27,10 +34,20 @@ func main() {
 
 	results := runner.Run()
 
-	if len(os.Args) > 1 && os.Args[1] == "--json" {
-		output.PrintJSON(results)
+	if *jsonOutput {
+		printJSON(results)
 		return
 	}
-	output.PrintResults(results)
 
+	output.PrintResults(results)
+}
+
+func printJSON(results []models.Result) {
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetIndent("", "  ")
+
+	if err := encoder.Encode(results); err != nil {
+		fmt.Fprintf(os.Stderr, "error encoding results: %v\n", err)
+		os.Exit(1)
+	}
 }

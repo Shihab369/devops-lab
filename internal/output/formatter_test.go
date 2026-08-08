@@ -3,7 +3,7 @@ package output
 import (
 	"testing"
 
-	"github.com/Shihab369/devops-thinking-lab/internal/models"
+	"github.com/Shihab369/devops-lab/internal/models"
 )
 
 func TestInterfaceTypes(t *testing.T) {

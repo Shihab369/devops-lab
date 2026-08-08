@@ -1,6 +1,6 @@
 package core
 
-import "github.com/Shihab369/devops-thinking-lab/internal/models"
+import "github.com/Shihab369/devops-lab/internal/models"
 
 type Runner struct {
 	collectors []Collector

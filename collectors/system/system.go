@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Shihab369/devops-thinking-lab/internal/core"
-	"github.com/Shihab369/devops-thinking-lab/internal/models"
+	"github.com/Shihab369/devops-lab/internal/core"
+	"github.com/Shihab369/devops-lab/internal/models"
 )
 
 type SystemCollector struct{}

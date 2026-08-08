@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Shihab369/devops-thinking-lab/internal/models"
+	"github.com/Shihab369/devops-lab/internal/models"
 )
 
 func PrintResults(results []models.Result) {

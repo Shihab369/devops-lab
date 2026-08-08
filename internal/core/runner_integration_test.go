@@ -3,11 +3,11 @@ package core_test
 import (
 	"testing"
 
-	"github.com/Shihab369/devops-thinking-lab/collectors/cpu"
-	"github.com/Shihab369/devops-thinking-lab/collectors/disk"
-	"github.com/Shihab369/devops-thinking-lab/collectors/memory"
-	"github.com/Shihab369/devops-thinking-lab/collectors/system"
-	"github.com/Shihab369/devops-thinking-lab/internal/core"
+	"github.com/Shihab369/devops-lab/collectors/cpu"
+	"github.com/Shihab369/devops-lab/collectors/disk"
+	"github.com/Shihab369/devops-lab/collectors/memory"
+	"github.com/Shihab369/devops-lab/collectors/system"
+	"github.com/Shihab369/devops-lab/internal/core"
 )
 
 func TestRunnerWithRealCollectors(t *testing.T) {

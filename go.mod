@@ -1,4 +1,4 @@
-module github.com/Shihab369/devops-thinking-lab
+module github.com/Shihab369/devops-lab
 
 go 1.26.5
 

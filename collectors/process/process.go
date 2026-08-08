@@ -60,7 +60,6 @@ func readProcessStatus(pid int) processStatus {
 		switch key {
 		case "Name":
 			result.name = value
-
 		case "State":
 			result.state = value
 
@@ -73,4 +72,27 @@ func readProcessStatus(pid int) processStatus {
 	}
 
 	return result
+}
+
+func listPIDs() []string {
+	entries, err := os.ReadDir("/proc")
+	if err != nil {
+		return []string{}
+	}
+
+	var pids []string
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		if _, err := strconv.Atoi(entry.Name()); err != nil {
+			continue
+		}
+
+		pids = append(pids, entry.Name())
+	}
+
+	return pids
 }

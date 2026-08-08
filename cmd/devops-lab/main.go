@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/Shihab369/devops-thinking-lab/collectors/cpu"
 	"github.com/Shihab369/devops-thinking-lab/collectors/disk"
 	"github.com/Shihab369/devops-thinking-lab/collectors/load"
@@ -24,6 +26,11 @@ func main() {
 	)
 
 	results := runner.Run()
+
+	if len(os.Args) > 1 && os.Args[1] == "--json" {
+		output.PrintJSON(results)
+		return
+	}
 	output.PrintResults(results)
 
 }

@@ -1,6 +1,6 @@
 package models
 
 type Result struct {
-	Name string
-	Data map[string]interface{}
+	Name string                 `json:"name"`
+	Data map[string]interface{} `json:"data"`
 }

@@ -1,6 +1,7 @@
 package output
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/Shihab369/devops-thinking-lab/internal/models"
@@ -11,6 +12,16 @@ func PrintResults(results []models.Result) {
 		fmt.Printf("[%s]\n", result.Name)
 		printData(result.Data, 1)
 	}
+}
+
+func PrintJSON(results []models.Result) {
+	data, err := json.MarshalIndent(results, "", "  ")
+	if err != nil {
+		fmt.Println("failed to encode results:", err)
+		return
+	}
+
+	fmt.Println(string(data))
 }
 
 func printData(data map[string]interface{}, level int) {

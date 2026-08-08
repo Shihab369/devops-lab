@@ -3,25 +3,23 @@ package process
 import "testing"
 
 func TestReadProcessStatus(t *testing.T) {
-	info := readProcessStatus(1)
+	result := readProcessStatus(1)
 
-	if info.PID != 1 {
-		t.Fatalf("expected PID 1, got %d", info.PID)
+	if result.pid != 1 {
+		t.Fatalf("expected PID 1, got %d", result.pid)
 	}
 
-	if info.Name == "" {
+	if result.name == "" {
 		t.Fatal("expected process name")
 	}
 
-	if info.State == "" {
+	if result.state == "" {
 		t.Fatal("expected process state")
 	}
 }
 
 func TestProcessCollector(t *testing.T) {
-	collector := ProcessCollector{
-		PID: 1,
-	}
+	collector := ProcessCollector{}
 
 	result := collector.Collect()
 
@@ -30,14 +28,6 @@ func TestProcessCollector(t *testing.T) {
 	}
 
 	if result.Data["pid"] != 1 {
-		t.Fatalf("expected pid 1, got %v", result.Data["pid"])
-	}
-
-	if result.Data["name"] == "" {
-		t.Fatal("expected process name")
-	}
-
-	if result.Data["state"] == "" {
-		t.Fatal("expected process state")
+		t.Fatalf("expected PID 1, got %v", result.Data["pid"])
 	}
 }

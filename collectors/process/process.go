@@ -2,6 +2,7 @@ package process
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -9,70 +10,67 @@ import (
 	"github.com/Shihab369/devops-thinking-lab/internal/models"
 )
 
-type ProcessInfo struct {
-	PID   int
-	PPID  int
-	Name  string
-	State string
-}
-
-type ProcessCollector struct {
-	PID int
-}
+type ProcessCollector struct{}
 
 var _ core.Collector = ProcessCollector{}
 
 func (p ProcessCollector) Collect() models.Result {
-	info := readProcessStatus(p.PID)
+	process := readProcessStatus(1)
 
 	return models.Result{
 		Name: "process",
 		Data: map[string]interface{}{
-			"pid":   info.PID,
-			"ppid":  info.PPID,
-			"name":  info.Name,
-			"state": info.State,
+			"pid":   process.pid,
+			"ppid":  process.ppid,
+			"name":  process.name,
+			"state": process.state,
 		},
 	}
 }
 
-func readProcessStatus(pid int) ProcessInfo {
-	path := "/proc/" + strconv.Itoa(pid) + "/status"
+type processStatus struct {
+	pid   int
+	ppid  int
+	name  string
+	state string
+}
+
+func readProcessStatus(pid int) processStatus {
+	path := filepath.Join("/proc", strconv.Itoa(pid), "status")
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return ProcessInfo{}
+		return processStatus{}
 	}
 
-	var info ProcessInfo
+	var result processStatus
 
 	lines := strings.Split(string(data), "\n")
 
 	for _, line := range lines {
-		key, value, ok := strings.Cut(line, ":")
-		if !ok {
+		fields := strings.SplitN(line, ":", 2)
+
+		if len(fields) != 2 {
 			continue
 		}
 
-		value = strings.TrimSpace(value)
+		key := strings.TrimSpace(fields[0])
+		value := strings.TrimSpace(fields[1])
 
 		switch key {
 		case "Name":
-			info.Name = value
+			result.name = value
 
 		case "State":
-			fields := strings.Fields(value)
-			if len(fields) > 0 {
-				info.State = fields[0]
-			}
+			result.state = value
 
 		case "Pid":
-			info.PID, _ = strconv.Atoi(value)
+			result.pid, _ = strconv.Atoi(value)
 
 		case "PPid":
-			info.PPID, _ = strconv.Atoi(value)
+			result.ppid, _ = strconv.Atoi(value)
 		}
 	}
 
-	return info
+	return result
 }

@@ -2,6 +2,7 @@ package system
 
 import (
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/Shihab369/devops-thinking-lab/internal/core"
@@ -16,9 +17,11 @@ func (s SystemCollector) Collect() models.Result {
 	return models.Result{
 		Name: "system",
 		Data: map[string]interface{}{
-			"hostname": readHostname(),
-			"kernel":   readKernel(),
-			"os":       readOSRelease(),
+			"hostname":     readHostname(),
+			"kernel":       readKernel(),
+			"os":           readOSRelease(),
+			"architecture": runtime.GOARCH,
+			"logical_cpus": runtime.NumCPU(),
 		},
 	}
 }

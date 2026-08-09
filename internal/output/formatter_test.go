@@ -96,3 +96,25 @@ func TestPrintResults(t *testing.T) {
 
 	PrintResults(results)
 }
+
+func TestSortedKeys(t *testing.T) {
+	data := map[string]interface{}{
+		"zebra":  1,
+		"apple":  2,
+		"middle": 3,
+	}
+
+	keys := sortedKeys(data)
+
+	expected := []string{"apple", "middle", "zebra"}
+
+	if len(keys) != len(expected) {
+		t.Fatalf("expected %d keys, got %d", len(expected), len(keys))
+	}
+
+	for i, key := range expected {
+		if keys[i] != key {
+			t.Fatalf("expected key %q at index %d, got %q", key, i, keys[i])
+		}
+	}
+}

@@ -71,8 +71,9 @@ func listInterfaces() []string {
 }
 
 func splitAddresses(addrs []net.Addr) ([]string, []string) {
-	var ipv4Addresses []string
-	var ipv6Addresses []string
+
+	ipv4Addresses := []string{}
+	ipv6Addresses := []string{}
 
 	for _, addr := range addrs {
 		ipNet, ok := addr.(*net.IPNet)

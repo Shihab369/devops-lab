@@ -3,6 +3,7 @@ package output
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	"github.com/Shihab369/devops-lab/internal/models"
 )
@@ -24,8 +25,22 @@ func PrintJSON(results []models.Result) {
 	fmt.Println(string(data))
 }
 
+func sortedKeys(data map[string]interface{}) []string {
+	keys := make([]string, 0, len(data))
+
+	for key := range data {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	return keys
+}
+
 func printData(data map[string]interface{}, level int) {
-	for key, value := range data {
+	for _, key := range sortedKeys(data) {
+		value := data[key]
+
 		printIndent(level)
 		fmt.Printf("%s: ", key)
 

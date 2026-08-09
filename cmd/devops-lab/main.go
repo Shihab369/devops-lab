@@ -10,6 +10,7 @@ import (
 	"github.com/Shihab369/devops-lab/collectors/disk"
 	"github.com/Shihab369/devops-lab/collectors/load"
 	"github.com/Shihab369/devops-lab/collectors/memory"
+	"github.com/Shihab369/devops-lab/collectors/network"
 	"github.com/Shihab369/devops-lab/collectors/process"
 	"github.com/Shihab369/devops-lab/collectors/system"
 	"github.com/Shihab369/devops-lab/collectors/uptime"
@@ -27,6 +28,7 @@ func main() {
 		disk.DiskCollector{},
 		load.LoadCollector{},
 		memory.MemoryCollector{},
+		network.NetworkCollector{},
 		process.ProcessCollector{},
 		system.SystemCollector{},
 		uptime.UptimeCollector{},

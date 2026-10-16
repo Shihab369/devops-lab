@@ -84,6 +84,24 @@ To see available options:
 go run ./cmd/devops-lab --help
 ```
 
+Health check mode (non-zero exit code when thresholds fail):
+
+```bash
+go run ./cmd/devops-lab --check
+```
+
+Custom thresholds:
+
+```bash
+go run ./cmd/devops-lab --check --cpu-max 80 --mem-max 85 --disk-max 90 --load-max 4
+```
+
+JSON output with check summary:
+
+```bash
+go run ./cmd/devops-lab --check --json
+```
+
 ## Architecture
 
 The project is organized around independent collectors and a shared execution pipeline.

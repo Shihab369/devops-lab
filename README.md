@@ -2,7 +2,7 @@
 
 A lightweight Linux system diagnostics CLI written in Go.
 
-DevOps Lab collects low-level system information from a Linux host and presents the results in either a human-readable format or structured JSON.
+DevOps Lab collects low-level system information from a Linux host and presents the results in either a human-readable format or structured JSON. It also provides threshold-based health checks for automation and monitoring.
 
 The project is designed as a small, modular foundation for experimenting with system diagnostics, collectors, observability concepts, and practical DevOps tooling.
 
@@ -14,6 +14,7 @@ Currently implemented collectors:
 - Disk usage
 - Load average
 - Memory statistics
+- Network diagnostics
 - Process information
 - System information
 - System uptime
@@ -30,6 +31,19 @@ usage_percent: 5.04
 total_bytes: 16580902912
 available_bytes: 9771622400
 free_bytes: 2123935744
+
+[network]
+  eth0:
+    state: up
+    mac_address: 00:11:22:33:44:55
+    mtu: 1500
+    ipv4_addresses: [192.168.1.10/24]
+    ipv6_addresses: [fe80::1/64]
+    rx_bytes: 123456
+    tx_bytes: 654321
+````
+
+The network collector reports interface state, MAC address, MTU, IPv4 and IPv6 addresses, and RX/TX byte and packet counters when available.
 
 JSON output:
 
@@ -48,7 +62,40 @@ JSON output:
     }
   }
 ]
-````
+```
+
+### Health check mode
+
+Use `--check` to evaluate core system metrics against configurable thresholds. The check evaluates CPU usage, memory usage, disk usage, and 1-minute load average.
+
+Default thresholds are:
+
+| Flag | Default | Metric |
+| --- | ---: | --- |
+| `--cpu-max` | `80` | Maximum CPU usage percentage |
+| `--mem-max` | `85` | Maximum memory usage percentage |
+| `--disk-max` | `90` | Maximum disk usage percentage |
+| `--load-max` | `runtime.NumCPU()` | Maximum 1-minute load average |
+
+The command exits with status `0` when all checks pass and status `1` when any check fails. Missing or invalid metric data is treated as a failed check.
+
+Human-readable health check:
+
+```bash
+go run ./cmd/devops-lab --check
+```
+
+Custom thresholds:
+
+```bash
+go run ./cmd/devops-lab --check --cpu-max 80 --mem-max 85 --disk-max 90 --load-max 4
+```
+
+JSON output with a machine-readable `check` result:
+
+```bash
+go run ./cmd/devops-lab --check --json
+```
 
 ## Installation
 
@@ -84,27 +131,9 @@ To see available options:
 go run ./cmd/devops-lab --help
 ```
 
-Health check mode (non-zero exit code when thresholds fail):
-
-```bash
-go run ./cmd/devops-lab --check
-```
-
-Custom thresholds:
-
-```bash
-go run ./cmd/devops-lab --check --cpu-max 80 --mem-max 85 --disk-max 90 --load-max 4
-```
-
-JSON output with check summary:
-
-```bash
-go run ./cmd/devops-lab --check --json
-```
-
 ## Architecture
 
-The project is organized around independent collectors and a shared execution pipeline.
+The project is organized around independent collectors, a shared execution pipeline, and a health-evaluation layer.
 
 ```text
 cmd/
@@ -116,11 +145,13 @@ collectors/
 ├── disk/
 ├── load/
 ├── memory/
+├── network/
 ├── process/
 ├── system/
 └── uptime/
 
 internal/
+├── check/
 ├── core/
 ├── models/
 └── output/
@@ -136,16 +167,20 @@ This keeps collection logic independent from the CLI and output formatting.
 
 The `internal/models` package contains the common result model shared across collectors.
 
+### Check
+
+The `internal/check` package evaluates CPU, memory, disk, and load results against configured thresholds. It produces a normalized health summary containing overall status, passed and failed counts, and per-metric details. The CLI uses this summary for human-readable output, JSON output, and process exit signaling.
+
 ### Output
 
-The `internal/output` package is responsible for formatting collected results into the supported output formats.
+The `internal/output` package is responsible for formatting collected results into human-readable output. JSON encoding for the CLI is handled in `cmd/devops-lab/main.go`.
 
 ## Development
 
-Format the code:
+Format all Go files recursively:
 
 ```bash
-gofmt -w .
+find . -name '*.go' -not -path './vendor/*' -print0 | xargs -0 gofmt -w
 ```
 
 Run the test suite:
@@ -169,7 +204,7 @@ git diff --check
 Before opening a pull request, make sure all checks pass:
 
 ```bash
-gofmt -w .
+find . -name '*.go' -not -path './vendor/*' -print0 | xargs -0 gofmt -w
 go test ./...
 go vet ./...
 git diff --check
@@ -203,7 +238,7 @@ git checkout -b feat/add-network-collector
 After making changes, run:
 
 ```bash
-gofmt -w .
+find . -name '*.go' -not -path './vendor/*' -print0 | xargs -0 gofmt -w
 go test ./...
 go vet ./...
 git diff --check
@@ -240,11 +275,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Planned improvements include:
 
-- Additional Linux system collectors
-- Network diagnostics
-- Disk and filesystem health checks
+- Filesystem health checks
+- Additional network statistics
+- More process diagnostics
 - Configurable output formats
 - More diagnostic capabilities
-- Improved CLI options
 - Cross-platform support where practical
 - Better documentation and contributor tooling
+- Release versioning
+- Automated binary builds

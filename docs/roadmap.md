@@ -16,6 +16,8 @@ Implemented:
 - Uptime collector
 - Human-readable output
 - JSON output
+- Threshold-based health checks for CPU, memory, disk, and 1-minute load
+- Configurable CLI thresholds and health-check exit signaling
 - Unit tests
 - Integration tests
 - GitHub issue and PR workflow
@@ -42,8 +44,6 @@ Potential areas include:
 - Filesystem health checks
 - Additional network statistics
 - More process diagnostics
-- Resource thresholds
-- Improved CLI options
 - Configurable output
 - More structured diagnostics
 - Release versioning

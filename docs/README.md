@@ -17,6 +17,7 @@ docs/
 │
 ├── development/
 │   ├── workflow.md
+│   ├── feature-development.md
 │   ├── commits.md
 │   ├── testing.md
 │   └── code-quality.md
@@ -51,6 +52,7 @@ Detailed documentation for individual collectors.
 Development, testing, and code-quality practices.
 
 - [Development Workflow](development/workflow.md)
+- [Feature Development](development/feature-development.md)
 - [Commit Conventions](development/commits.md)
 - [Testing](development/testing.md)
 - [Code Quality](development/code-quality.md)
